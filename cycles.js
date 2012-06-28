@@ -41,7 +41,7 @@ var makeCycle = function makeCycle(scope, identifyCycle) {
             "Declare",
             "Create",
             "Make"];
-        state[state.parts[3]] = [1,54,73,007,"Number 6", "Room 101",
+        state[state.parts[3]] = [1,54,73,"007","Number 6", "Room 101",
             42, 5440, "News at 11", "Ours is not to wonder why",
             87, "42 Below", "Once more into the breach", 
             "Now comes the mystery", "A fine mess", 1984, 2001, 
@@ -52,7 +52,7 @@ var makeCycle = function makeCycle(scope, identifyCycle) {
             "put the value %value% into the variable named `%variableName%`",
             "put %value% into `%variableName%`",
             "set the variable named `%variableName%` to the value %value%",
-            "set the variable named `%variableName%` to the value %value%",
+            "set the variable named `%variableName%` to the value %value%"
             ];
         state[state.parts[7]] = ["print the value of the variable named `%variableName%` to the console",
             "print `%variableName%` to the console",
@@ -111,17 +111,20 @@ var makeCycle = function makeCycle(scope, identifyCycle) {
                 // Only check for previous values if there are more options than the max
                 var check = maxPreviousCount < state[state.parts[index]].length;
                 var success = true;
-                do {
-                    value = Math.floor(Math.random() * state[state.parts[index]].length)
-                    utils.logWrap(function () {
+                var checkFunc = function(val) {
+                    return function() {
                         if (check) {
-                            success = o.checkPrevious(index, value);
+                            success = o.checkPrevious(index, val);
                             console.log(success);
                         }
-                    });
+                    };
+                };
+                do {
+                    value = Math.floor(Math.random() * state[state.parts[index]].length);
+                    utils.logWrap(checkFunc(value));
                 } while (!success);
                 return value;
-            }
+            };
             o.randomQuestion = function randomQuestion() {
                 for (var i=0; i<state.parts.length; i++) {
                     state.indices[i] = o.getRandomValueForIndex(i);
